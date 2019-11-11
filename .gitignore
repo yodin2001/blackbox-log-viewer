@@ -30,6 +30,8 @@ nw_200_percent.pak
 nw_elf.dll
 resources.pak
 v8_context_snapshot.bin
+debug.log
+icudtl.dat
 /locales/
 /swiftshader/
 

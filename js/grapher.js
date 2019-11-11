@@ -84,6 +84,8 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
         
         lapTimer, /* LapTimer feature */
 
+        osd = null,
+
         that = this;
 
     
@@ -495,6 +497,8 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
         canvasContext.fillText(formatTime(timeMsec, true), canvas.width - frameLabelTextWidthFrameTime - 8, canvas.height - 8 - drawingParams.fontSizeFrameLabel - 8);
 
     }
+
+    
     
     /**
      * Plot the given field within the specified time period. When the output from the curve applied to a field
@@ -1026,7 +1030,8 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
             var
                 centerFrame = flightLog.getSmoothedFrameAtTime(windowCenterTime);
             
-            if (centerFrame) {
+            if (centerFrame)
+            {
                 if (options.drawSticks) {
                     canvasContext.save();
                     
@@ -1049,6 +1054,8 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
                     craft2D.render(centerFrame, flightLog.getMainFieldIndexes());
                     
                 }
+                //Draw OSD
+                osd.drawOSD(centerFrame);
             }
             
             // Draw Analyser
@@ -1069,6 +1076,8 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
             if (options.drawLapTimer && lapTimer) {
                 drawLapTimer();
             }
+
+            
 
         }
         
@@ -1229,7 +1238,10 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
 	lapTimer = new LapTimer();
 
     //Handle dragging events
-    $(canvas).on("mousedown",onMouseDown);
+    $(canvas).on("mousedown", onMouseDown);
+
+    //Create OSD object
+    osd = new OSD(flightLog, canvas);
     
     graphConfig.addListener(this.refreshGraphConfig);
     this.refreshGraphConfig();
@@ -1237,3 +1249,4 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
     this.resize(canvas.width, canvas.height);
 
 }
+
