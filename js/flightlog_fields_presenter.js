@@ -191,6 +191,9 @@ function FlightLogFieldPresenter() {
             case 'axisRate[2]':
                 return Math.round(value) + " deg/s";
 
+            case 'rcData[3]':
+                return Math.round(flightLog.rcDataToThrottle(value)) + " %";
+
             case 'rcCommand[0]':
                 return Math.round(flightLog.rcCommandRawToDegreesPerSecond(value,0), currentFlightMode) + " deg/s";
             case 'rcCommand[1]':
@@ -309,10 +312,10 @@ function FlightLogFieldPresenter() {
 			case 'navTgtVel[1]':
 			case 'velocity':
 				if (userSettings.velocityUnits == 'I') // Imperial
-					return (value * 0.0223694).toFixed(1) + "mph";
+					return (value * 0.0223694).toFixed(1) + " mph";
 				if (userSettings.velocityUnits == 'M') // Metric
-					return (value * 0.036).toFixed(1) + "kph";
-				return (value / 100).toFixed(2) + "m/s"; // Default
+					return (value * 0.036).toFixed(1) + " kph";
+				return (value / 100).toFixed(2) + " m/s"; // Default
 
 			case 'navVel[2]': // Vertical speed always in m/s
 			case 'navTgtVel[2]': // Vertical speed always in m/s
@@ -322,11 +325,20 @@ function FlightLogFieldPresenter() {
 				return Math.round(value / 10.24) + "%";
 
 			case 'amperage':
-				return (value / 100.0).toFixed(2) + "A";
+                return (value / 100.0).toFixed(2) + "A";
+
+            case 'power':
+                return value.toFixed(2) + " W";
 
 			case 'vbat':
 			case 'sagCompensatedVBat':
-				return (value / 100.0).toFixed(2) + "V";
+                return (value / 100.0).toFixed(2) + "V";
+
+            case 'DistHome':
+                if (userSettings.velocityUnits == 'I') // Imperial
+                    return (value / 30.48).toFixed(0) + " ft";
+                if (userSettings.velocityUnits == 'M') // Metric
+                    return (value / 100.0).toFixed(1) + " m";
 
             default:
                 return "";

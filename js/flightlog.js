@@ -228,7 +228,9 @@ function FlightLog(logData) {
         fieldNames.push("axisError[0]", "axisError[1]", "axisError[2]"); // Custom calculated error field
         fieldNames.push("rcCommands[0]", "rcCommands[1]", "rcCommands[2]"); // Custom calculated error field
         fieldNames.push("gyroADCs[0]", "gyroADCs[1]", "gyroADCs[2]"); // Custom calculated error field
-		fieldNames.push("velocity");
+        fieldNames.push("velocity");
+        fieldNames.push("power");
+        fieldNames.push("DistHome");
 
         fieldNameToIndex = {};
         for (i = 0; i < fieldNames.length; i++) {
@@ -514,7 +516,8 @@ function FlightLog(logData) {
 
             sysConfig,
             attitude,
-			navVel = [fieldNameToIndex["navVel[0]"], fieldNameToIndex["navVel[1]"]],
+            navVel = [fieldNameToIndex["navVel[0]"], fieldNameToIndex["navVel[1]"]],
+            navPos = [fieldNameToIndex["navPos[0]"], fieldNameToIndex["navPos[1]"], fieldNameToIndex["navPos[2]"]],
 
             axisPID = [[fieldNameToIndex["axisP[0]"], fieldNameToIndex["axisI[0]"], fieldNameToIndex["axisD[0]"]],
                        [fieldNameToIndex["axisP[1]"], fieldNameToIndex["axisI[1]"], fieldNameToIndex["axisD[1]"]],
@@ -602,7 +605,19 @@ function FlightLog(logData) {
 						velx = srcFrame[navVel[0]],
 						vely = srcFrame[navVel[1]];
 					if (velx !== undefined && vely !== undefined)
-						destFrame[fieldIndex++] = Math.round(Math.hypot(velx, vely));
+                        destFrame[fieldIndex++] = Math.round(Math.hypot(velx, vely));
+                    //Calculate battery power
+                    var
+                        voltage = srcFrame[fieldNameToIndex["vbat"]],
+                        amps = srcFrame[fieldNameToIndex["amperage"]];
+                    if (voltage !== undefined && amps !== undefined)
+                        destFrame[fieldIndex++] = voltage * amps / 10000;
+                    //Home distance calculation
+                    var
+                        rangeX = srcFrame[navPos[0]],
+                        rangeY = srcFrame[navPos[1]];
+                    if (rangeX !== undefined && rangeY !== undefined)
+                        destFrame[fieldIndex++] = Math.round(Math.hypot(rangeX, rangeY));
                 }
             }
         }
@@ -971,6 +986,11 @@ FlightLog.prototype.rcCommandRawToDegreesPerSecond = function(value, axis, curre
 FlightLog.prototype.rcCommandRawToThrottle = function(value) {
     // Throttle displayed as percentage
     return Math.min(Math.max(((value - this.getSysConfig().minthrottle) / (this.getSysConfig().maxthrottle - this.getSysConfig().minthrottle)) * 100.0, 0.0),100.0);
+};
+
+FlightLog.prototype.rcDataToThrottle = function (value) {
+    // Throttle displayed as percentage
+    return Math.min(Math.max(((value - 1000.0) / 1000.0) * 100.0, 0.0), 100.0);
 };
 
 FlightLog.prototype.rcMotorRawToPct = function(value) {
