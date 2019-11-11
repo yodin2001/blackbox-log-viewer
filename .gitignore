@@ -12,6 +12,26 @@ apps/
 dist/
 debug/
 release/
+/.vs/
+
+inav-blackbox-explorer.exe
+credits.html
+d3dcompiler_47.dll
+icudtl.dat
+ffmpeg.dll
+libEGL.dll
+libGLESv2.dll
+natives_blob.bin
+node.dll
+notification_helper.exe
+nw.dll
+nw_100_percent.pak
+nw_200_percent.pak
+nw_elf.dll
+resources.pak
+v8_context_snapshot.bin
+/locales/
+/swiftshader/
 
 # artefacts for Visual Studio Code
 /.vscode/
