@@ -1374,6 +1374,11 @@ var FlightLogParser = function(logData) {
         }
     };
 
+    //returns current GPS data
+    this.getGPSData = function () {
+        return lastGPS;
+    }
+
     /**
      * Set the current GPS home data to the given frame. Pass an empty array in in order to invalidate the GPS home
      * frame data.

@@ -44,14 +44,14 @@ function UserSettingsDialog(dialog, onLoad, onSave) {
 		stickTrails			: false,			// Show stick trails?
 		stickInvertYaw		: false,			// Invert yaw in stick display?
         legendUnits			: true,	            // Show units on legend?
-		velocityUnits		: "D",				// Units for composite velocity "D" / "M" / "I"
+		velocityUnits		: "M",				// Units for composite velocity "D" / "M" / "I"
 		gapless				: false,
-		drawCraft			: "3D", 
+		drawCraft			: false, 
 		drawPidTable		: true, 
 		drawSticks			: true, 
-		drawTime			: true,
-		drawEvents			: true,
-		drawAnalyser		: true,             // add an analyser option
+		drawTime			: false,
+		drawEvents			: false,
+		drawAnalyser		: false,             // add an analyser option
 		drawWatermark		: false,			// Show Watermark on display?
 		drawLapTimer		: false,			// Show Laptimer on display?
 		graphSmoothOverride : false, 			// Ability to toggle smoothing off=normal/ on=force 0%

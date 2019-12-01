@@ -11,7 +11,7 @@
  */
 function FlightLog(logData) {
     var
-        ADDITIONAL_COMPUTED_FIELD_COUNT = 16, /** attitude + PID_SUM + PID_ERROR + RCCOMMAND_SCALED + GYROADC_SCALED + VELOCITY **/
+        ADDITIONAL_COMPUTED_FIELD_COUNT = 18, /** attitude + PID_SUM + PID_ERROR + RCCOMMAND_SCALED + GYROADC_SCALED + VELOCITY **/
 
         that = this,
         logIndex = false,

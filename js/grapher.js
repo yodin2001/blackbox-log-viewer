@@ -74,7 +74,7 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
 
         inTime = false, outTime = false,
         
-        lastMouseX, lastMouseY,
+        MouseDownX, MouseDownY, MouseDownOSDindex, MouseDownOSDx, MouseDownOSDy,
         
         craft3D = null, craft2D = null,
         
@@ -114,19 +114,33 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
         e.preventDefault();
         
         if (that.onSeek) {
-            //Reverse the seek direction so that it looks like you're dragging the data with the mouse
-            that.onSeek((lastMouseX - e.pageX) / canvas.width * windowWidthMicros); 
+           that.onSeek(0); 
         }
         
-        lastMouseX = e.pageX;
-        lastMouseY = e.pageY;
+        var rect = canvas.getBoundingClientRect();
+        if (MouseDownOSDindex != null)
+        {
+            osd.dragItem(MouseDownOSDindex, MouseDownX, MouseDownY, e.clientX - rect.left, e.clientY - rect.top, MouseDownOSDx, MouseDownOSDy);
+        }
+        
     }
     
     function onMouseDown(e) {
         if (e.which == 1) { //Left mouse button only for seeking
-            lastMouseX = e.pageX;
-            lastMouseY = e.pageY;
+
+            var rect = canvas.getBoundingClientRect();
+            MouseDownX = e.clientX - rect.left;
+            MouseDownY = e.clientY - rect.top;
+
+            MouseDownOSDindex = osd.GetOSDindexByCoords(MouseDownX, MouseDownY);
             
+            if (MouseDownOSDindex != null)
+            {
+                var MDcoords = osd.GetOSDitemCoords(MouseDownOSDindex);
+                MouseDownOSDx = MDcoords.x;
+                MouseDownOSDy = MDcoords.y;
+            }
+           
             //"capture" the mouse so we can drag outside the boundaries of canvas
             $(document).on("mousemove", onMouseMove);
             
@@ -916,7 +930,7 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
         
         if (craft2D) {
             craft2D.resize(craftSize, craftSize);
-        } else {
+        } else if (craft3D){
             craft3D.resize(craftSize, craftSize);
         }
 
@@ -931,7 +945,7 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
         computeDrawingParameters();
     };
     
-    this.render = function(windowCenterTimeMicros) {
+    this.render = function (windowCenterTimeMicros) {
         windowCenterTime = windowCenterTimeMicros;
         windowStartTime = windowCenterTime - windowWidthMicros / 2;
         windowEndTime = windowStartTime + windowWidthMicros;
