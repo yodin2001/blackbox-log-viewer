@@ -3,39 +3,6 @@
 function OSD(flightLog, canvas)
 {
     var canvasContext = canvas.getContext("2d");
-    var OSDsettings =
-    {
-        AspectRatio: 16 / 9,
-        TextRowsCount: 20,
-        TextColumnsCount: 40,
-        RelFontSize: 1.0,
-        Font : "serif"
-    };
-    var OSDitems = [
-        {
-            enabled : true,
-            Field   : "velocity",
-            posX    : 0,
-            posY: 0,
-            width : null
-        },
-        {
-            enabled: true,
-            Field: "DistHome",
-            posX: 0,
-            posY: 1,
-            width : null
-        },
-        {
-            enabled: true,
-            Field: "time",
-            posX: 0,
-            posY: 2,
-            width: null
-        },
-    ]
-
-
 
     function GetCanvasSizeWithAspectRatio()
     {
@@ -46,16 +13,16 @@ function OSD(flightLog, canvas)
             startX : 0,
             startY : 0
         };
-        
-        if ((canvas.width / canvas.height) > OSDsettings.AspectRatio)
+
+        if ((canvas.width / canvas.height) > userSettings.OSDsettings.AspectRatio)
         {
-            output.width = Math.round(canvas.height * OSDsettings.AspectRatio);
-            output.startX = Math.round( (canvas.width - (canvas.height * OSDsettings.AspectRatio)) / 2);
+            output.width = Math.round(canvas.height * userSettings.OSDsettings.AspectRatio);
+            output.startX = Math.round((canvas.width - (canvas.height * userSettings.OSDsettings.AspectRatio)) / 2);
         }
-        else if ((canvas.width / canvas.height) < OSDsettings.AspectRatio)
+        else if ((canvas.width / canvas.height) < userSettings.OSDsettings.AspectRatio)
         {
-            output.height = Math.round(canvas.width / OSDsettings.AspectRatio);
-            output.startY = Math.round( (canvas.height - (canvas.width / OSDsettings.AspectRatio)) / 2 );
+            output.height = Math.round(canvas.width / userSettings.OSDsettings.AspectRatio);
+            output.startY = Math.round((canvas.height - (canvas.width / userSettings.OSDsettings.AspectRatio)) / 2 );
         };
         
         return output;
@@ -71,8 +38,8 @@ function OSD(flightLog, canvas)
 
         if (index != null)
         {
-            out.x = OSDitems[index].posX;
-            out.y = OSDitems[index].posY;
+            out.x = userSettings.OSDitems[index].posX;
+            out.y = userSettings.OSDitems[index].posY;
             return out;
         }
 
@@ -81,19 +48,19 @@ function OSD(flightLog, canvas)
     this.dragItem = function (itemIndex, mouseDownX, mouseDownY, mouseX, mouseY, itemOrigx, itemOrigy)
     {
          var 
-            canvasParams = GetCanvasSizeWithAspectRatio(),
-            xStep = canvasParams.width / OSDsettings.TextColumnsCount,
-            yStep = canvasParams.height / OSDsettings.TextRowsCount,
+             canvasParams = GetCanvasSizeWithAspectRatio(),
+             xStep = canvasParams.width / userSettings.OSDsettings.TextColumnsCount,
+             yStep = canvasParams.height / userSettings.OSDsettings.TextRowsCount,
 
              Xmove = Math.round((mouseX - mouseDownX) / xStep),
              Ymove = Math.round((mouseY - mouseDownY) / yStep);
         
         if (itemIndex != null)
         {
-            if (OSDitems[itemIndex].enabled)
+            if (userSettings.OSDitems[itemIndex].enabled)
             {
-                OSDitems[itemIndex].posX = Math.min(Math.max(itemOrigx + Xmove, 0), OSDsettings.TextColumnsCount - OSDitems[itemIndex].width);
-                OSDitems[itemIndex].posY = Math.min(Math.max(itemOrigy + Ymove, 0), OSDsettings.TextRowsCount - 1);;
+                userSettings.OSDitems[itemIndex].posX = Math.min(Math.max(itemOrigx + Xmove, 0), userSettings.OSDsettings.TextColumnsCount - userSettings.OSDitems[itemIndex].width);
+                userSettings.OSDitems[itemIndex].posY = Math.min(Math.max(itemOrigy + Ymove, 0), userSettings.OSDsettings.TextRowsCount - 1);
             }
         }
     }
@@ -111,43 +78,35 @@ function OSD(flightLog, canvas)
             
             var canvasParams = GetCanvasSizeWithAspectRatio(),
                 
-                xStep = canvasParams.width / OSDsettings.TextColumnsCount,
-                yStep = canvasParams.height / OSDsettings.TextRowsCount,
-                FontSize = yStep * OSDsettings.RelFontSize,
+                xStep = canvasParams.width / userSettings.OSDsettings.TextColumnsCount,
+                yStep = canvasParams.height / userSettings.OSDsettings.TextRowsCount,
+                FontSize = yStep * userSettings.OSDsettings.RelFontSize,
                 text = GetFriendlyFieldValueByName(OSDitem.Field, frame);
 
             //prepare text format
-            canvasContext.font = FontSize + "px " + OSDsettings.Font;
+            canvasContext.font = FontSize + "px " + userSettings.OSDsettings.Font;
             canvasContext.fillStyle = "rgba(255,255,255,1.00)";
 
             OSDitem.width = Math.ceil(canvasContext.measureText(text).width / xStep);
 
-            var Ypos = canvasParams.startY + yStep * (OSDitem.posY + 1) - (yStep - yStep * OSDsettings.RelFontSize / 1.5)/2;
+            var Ypos = canvasParams.startY + yStep * (OSDitem.posY + 1) - (yStep - yStep * userSettings.OSDsettings.RelFontSize / 1.5)/2;
 
             canvasContext.fillText(text, canvasParams.startX + xStep * OSDitem.posX, Ypos);
         }
          
         canvasContext.save();
 
-        for (let OSDitem of OSDitems) {
+        for (let OSDitem of userSettings.OSDitems) {
             if (OSDitem.enabled)
             {
                 drawTextValue(OSDitem);
             }
             
         }
-
-        //canvasContext.font = 14 + "px " + OSDsettings.Font;
-        //canvasContext.fillText(flightLog.parser.frameDefs[1], 200 , 200);  
         
         canvasContext.restore();
     }
 
-    function load_html() {
-        $('#content').load("./tabs/gps.html", process_html);
-    }
-
-    
     
     function fieldValueToFriendly(fieldName, value, frame)
     {
@@ -157,7 +116,7 @@ function OSD(flightLog, canvas)
         switch (fieldName) {
 
             case 'time':
-                return formatTime(value / 1000, false);
+                return formatTime((value - flightLog.getMinTime())/ 1000, false);
 
             case 'DistHome':
                 if (userSettings.velocityUnits == 'I') // Imperial
@@ -178,8 +137,8 @@ function OSD(flightLog, canvas)
     function CoordToOSDGrid(x, y)
     {
         var canvasParams = GetCanvasSizeWithAspectRatio(),
-            xStep = canvasParams.width / OSDsettings.TextColumnsCount,
-            yStep = canvasParams.height / OSDsettings.TextRowsCount;
+            xStep = canvasParams.width / userSettings.OSDsettings.TextColumnsCount,
+            yStep = canvasParams.height / userSettings.OSDsettings.TextRowsCount;
 
         return {
             x: Math.floor((x - Math.round((canvas.width - canvasParams.width) / 2)) / xStep),
@@ -206,9 +165,9 @@ function OSD(flightLog, canvas)
     {
         var result = null;
 
-        for (var i = 0; i < OSDitems.length; i++) {
-            if (OSDitems[i].enabled) {
-                if (isInGridCoordsZone(mouseX, mouseY, OSDitems[i].posX, OSDitems[i].posY, OSDitems[i].width, 1))
+        for (var i = 0; i < userSettings.OSDitems.length; i++) {
+            if (userSettings.OSDitems[i].enabled) {
+                if (isInGridCoordsZone(mouseX, mouseY, userSettings.OSDitems[i].posX, userSettings.OSDitems[i].posY, userSettings.OSDitems[i].width, 1))
                 {
                     return i;
                 }

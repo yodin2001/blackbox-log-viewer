@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="css/header_dialog.css">
 <link rel="stylesheet" href="css/keys_dialog.css">
 <link rel="stylesheet" href="css/user_settings_dialog.css">
+<link rel="stylesheet" href="leaflet/leaflet.css" />
 
 <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 </head>
@@ -480,11 +481,19 @@
         <div class="configuration-file" id="configuration-file">
             <!-- auto filled by configuration function -->
         </div>
+
+        <!-- Map-->
+        <div id="mapid">
+        </div>
     </div>
     <!-- Log Scroll bar -->
     <div class="log-seek-bar">
         <canvas width="200" height="100"></canvas>
     </div>
+
+
+
+
     <!-- Status Bar -->
     <div id="status-bar">
         <div>
@@ -1685,5 +1694,8 @@
     <script src="js/laptimer.js"></script>
     <script src="js/main.js"></script>
     <script src="js/osd.js"></script>
+    <script src="leaflet/leaflet.js"></script>
+    <script src="leaflet/leaflet.rotatedMarker.js"></script>
+    <script src="js/map.js"></script>
 </body>
 </html>

@@ -85,6 +85,7 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
         lapTimer, /* LapTimer feature */
 
         osd = null,
+        navMap = null,
 
         that = this;
 
@@ -112,7 +113,6 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
     
     function onMouseMove(e) {
         e.preventDefault();
-        
         if (that.onSeek) {
            that.onSeek(0); 
         }
@@ -122,6 +122,7 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
         {
             osd.dragItem(MouseDownOSDindex, MouseDownX, MouseDownY, e.clientX - rect.left, e.clientY - rect.top, MouseDownOSDx, MouseDownOSDy);
         }
+        
         
     }
     
@@ -921,7 +922,7 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
         
         drawingParams = extend(drawingParams, newParams);
     }
-    
+       
     this.resize = function(width, height) {
         canvas.width = width;
         canvas.height = height;
@@ -932,6 +933,10 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
             craft2D.resize(craftSize, craftSize);
         } else if (craft3D){
             craft3D.resize(craftSize, craftSize);
+        }
+
+        if (navMap) {
+            navMap.resize();
         }
 
         // Recenter the craft canvas in the top left corner
@@ -1070,6 +1075,10 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
                 }
                 //Draw OSD
                 osd.drawOSD(centerFrame);
+
+                if (navMap) {
+                    navMap.update(centerFrame);
+                }
             }
             
             // Draw Analyser
@@ -1150,6 +1159,8 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
     
         flightLog.setFieldSmoothing(smoothing);
     }
+
+
     
     this.initializeCraftModel = function() {
         // Ensure drawCraft is a valid value
@@ -1256,11 +1267,15 @@ function FlightLogGrapher(flightLog, graphConfig, canvas, craftCanvas, analyserC
 
     //Create OSD object
     osd = new OSD(flightLog, canvas);
-    
+
+    //Create map object
+    navMap = new LeafletMap(flightLog, canvas, options);
+
     graphConfig.addListener(this.refreshGraphConfig);
     this.refreshGraphConfig();
     
     this.resize(canvas.width, canvas.height);
 
+    
 }
 

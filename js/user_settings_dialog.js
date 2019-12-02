@@ -86,7 +86,57 @@ function UserSettingsDialog(dialog, onLoad, onSave) {
 									left  : '5%',			// position from left (as a percentage of width)
 									top   : '50%',  			// position from top (as a percentage of height)
 									transparency : '40%',  // transparency of laptimer
-							  },
+        },
+        mapSettings         : {
+                                    left: 0.0,
+                                    top: 0.8,
+                                    width: 0.2,
+                                    height: 0.2
+        },
+        OSDsettings :        {
+                                    AspectRatio: 16 / 9,
+                                    TextRowsCount: 20,
+                                    TextColumnsCount: 40,
+                                    RelFontSize: 1.0,
+                                    Font: "serif"
+        },
+        OSDitems : [
+            {
+                enabled: true,
+                Field: "velocity",
+                posX: 0,
+                posY: 0,
+                width: null
+            },
+            {
+                enabled: true,
+                Field: "DistHome",
+                posX: 0,
+                posY: 1,
+                width: null
+            },
+            {
+                enabled: true,
+                Field: "time",
+                posX: 0,
+                posY: 2,
+                width: null
+            },
+            {
+                enabled: true,
+                Field: "navPos[2]",
+                posX: 0,
+                posY: 3,
+                width: null
+            },
+            {
+                enabled: true,
+                Field: "BaroAlt",
+                posX: 0,
+                posY: 4,
+                width: null
+            },
+        ],
 	};
 
 	var currentSettings = {};
